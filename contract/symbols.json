@@ -1,0 +1,14 @@
+{
+  "symbols":[
+    {
+      "name":"BoxMinValue",
+      "type":"Long",
+      "value":"1000000"
+    },
+    {
+      "name":"txFee",
+      "type":"Long",
+      "value":"1100000"
+    }
+  ]
+}
