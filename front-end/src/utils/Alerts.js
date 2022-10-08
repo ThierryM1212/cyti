@@ -55,7 +55,7 @@ export function displayErgoPayTransaction(txId, reducedTx) {
         icon: 'success',
         showConfirmButton: true,
         html: <div><p>Send the transaction to wallet </p>
-            <button className='btn btn-ultra-voilet m-1' onClick={() => {
+            <button className='btn btn-blue m-1' onClick={() => {
                 const url = `ergopay:${reducedTx}`;
                 window.open(url, '_blank').focus();
             }} > Sign with ErgoPay
