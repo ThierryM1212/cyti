@@ -17,7 +17,7 @@ export default class App extends React.Component {
               <div>
                 <button className='btn btn-yellow'
                   onClick={() => {
-                    const url = 'https://github.com/ThierryM1212/cyti';
+                    const url = 'https://github.com/ThierryM1212/cyti/releases';
                     window.open(url, '_blank').focus();
                   }}
                 >
