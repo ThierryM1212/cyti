@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node cyti-miner.js",
-    "buildexe": "nexe cyti-miner.js --build --verbose"
+    "buildexe": "nexe cyti-miner.js --build --verbose --ico axe-icon.ico"
   },
   "author": "ThierryM1212",
   "license": "MIT",
