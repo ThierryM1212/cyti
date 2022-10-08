@@ -43,6 +43,6 @@ Once a miner found it and send the transaction, the contract can be processed (b
 CYTI contract and document associated
 ## front-end
 React js UI to mint CYTI contract or normal tokens
-## mint-bot
+## cyti-miner
 nodejs miner bot to mine and process the CYTI contracts
 

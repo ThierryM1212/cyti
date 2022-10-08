@@ -1,0 +1,46 @@
+# CYTI mint bot
+Bot mining tokenID for CYTI smart contract and processing the token minting and miner payment.
+
+
+# Usage
+## Configuration
+config.json
+- MINER_ADDRESS: Address to receive fee for mining token ID
+- PARALLEL_DEGREE: Number of worker processes
+- MINER_PORT: port for the web monitoring UI (default 4000)
+- MIN_ERG_PRICE_2_CHAR: Minimal prices to mint token ID with 2 characters
+- MIN_ERG_PRICE_4_CHAR: Minimal prices to mint token ID with 4 characters
+- MIN_ERG_PRICE_6_CHAR: Minimal prices to mint token ID with 6 characters
+- MIN_ERG_PRICE_8_CHAR: Minimal prices to mint token ID with 8 characters
+- MINER_COLD_DOWN: Miner wait time when nothing to process (s)
+- MINER_COLD_DOWN: Interval to process CYTI results transactions (s)
+- EXPLORER_API_URL: Ergo explorer URL
+- NUM_ITERATIONS: Number of tries per process per try
+- COLOR_HEADER_1: Headers color for the first table
+- COLOR_HEADER_2: Headers color for the second table
+- LOG_LENGTH: Number of log line to display
+- DEBUG: Enable debug mode if > 0
+
+## Windows - cyti-miner.exe
+- Unzip the provided package.
+- Double click the exe or execute it using cmd.
+
+## Linux (x64) - cyti-miner
+- untar the provided package.
+- run: ./cyti-miner
+
+## cyti-miner.js (All platform)
+### pre-requisites
+CYTI miner is tested and delivered with Nodejs 16.15.0
+It requires Nodejs >= 15 to run.
+
+### install
+npm i
+
+### Run
+node cyti-miner.js
+
+## Build executable
+This requires to install nexe, NASM and Visual Studio (Windows) or build-essentials (linux)
+npm run buildexe
+
