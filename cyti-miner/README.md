@@ -21,6 +21,9 @@ config.json
 - LOG_LENGTH: Number of log line to display
 - DEBUG: Enable debug mode if > 0
 
+The configuration of any value can be overidden by an enviroment variable with the same name.
+This allow to run the provided haileypdll/cyti-miner with your configuration (see "Run docker image")
+
 ## Windows - cyti-miner.exe
 - Unzip the provided package.
 - Double click the exe or execute it using cmd.
@@ -44,3 +47,9 @@ node cyti-miner.js
 This requires to install nexe, NASM and Visual Studio (Windows) or build-essentials (linux)
 npm run buildexe
 
+## Build docker image
+- Update the configuration file
+- docker run -p 4000:4000 cyti-miner 
+
+## Run haileypdll/cyti-miner docker image
+- 
