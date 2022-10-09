@@ -1,4 +1,5 @@
 import { NANOERG_TO_ERG } from "./constants.js";
+import { config as configFile } from '../config.js';
 
 export function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -52,4 +53,17 @@ export function convertMsToTime(milliseconds) {
     }
     res = res + minutes + ' mn ' + seconds + ' s';
     return res;
+}
+
+// Override the configuration by the values provided in the env
+export function getConfigUpdated() {
+    var configUpdated = {};
+    for (const key of Object.keys(configFile)) {
+        if (process.env[key] && process.env[key] !== '') {
+            configUpdated[key] = process.env[key];
+        } else {
+            configUpdated[key] = configFile[key];
+        }
+    }
+    return configUpdated;
 }

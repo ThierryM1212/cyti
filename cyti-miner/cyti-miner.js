@@ -1,12 +1,15 @@
 import { CYTI_MINT_REQUEST_SCRIPT_ADDRESS, NANOERG_TO_ERG } from "./src/constants.js";
 import { processMintRequestParallel, processMintResults } from './src/bot_wasm.js';
-import { convertMsToTime, formatERGAmount, formatLongString, shuffleArray, sleep } from './src/utils.js';
+import { convertMsToTime, formatERGAmount, formatLongString, getConfigUpdated, shuffleArray, sleep } from './src/utils.js';
 import { getUnspentBoxesForAddressUpdated } from "./src/explorer.js";
 import Table from 'cli-table';
-import { config } from "./config.js";
+import { config as configFile } from "./config.js";
 import express from 'express';
 import path from 'path';
 
+
+// update configuration with env variables
+const config = getConfigUpdated(configFile);
 
 // Prepare state and display variables
 const startupDate = new Date();

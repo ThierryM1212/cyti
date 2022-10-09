@@ -3,8 +3,10 @@ import { CYTI_MINT_REQUEST_SCRIPT_ADDRESS, MIN_NANOERG_BOX_VALUE, TX_FEE } from 
 import { currentHeight, sendTx } from './explorer.js';
 import { createTransaction, decodeStringArray, encodeHexConst, encodeStrConst, getRegisterValue, signTransaction } from './wasm.js';
 import workerpool from 'workerpool';
-import { config } from '../config.js';
+import { config as configFile } from '../config.js';
+import { getConfigUpdated } from './utils.js';
 let ergolib = import('ergo-lib-wasm-nodejs');
+const config = getConfigUpdated(configFile);
 
 
 export async function processMintRequestParallel(mintRequestJSON, setCurrentHashRate) {
