@@ -288,7 +288,7 @@ export default class MintTokens extends React.Component {
                     <div className='d-flex flex-row justify-content-center align-items-center m-1 p-1'>
                         <button className='btn btn-blue'
                             onClick={() => this.mintToken()}
-                            disabled={this.state.tokenName.length === 0 }
+                            disabled={this.state.tokenName.length === 0 || address === ''}
                         >
                             {
                                 this.state.tokenIDStart.length > 0 ?
