@@ -6,6 +6,7 @@ import Table from 'cli-table';
 import { config as configFile } from "./config.js";
 import express from 'express';
 import path from 'path';
+import { addressToSigmaPropHex, toHexString } from "./src/wasm.js";
 
 
 // update configuration with env variables
@@ -68,13 +69,12 @@ function addToLog(msg) {
 async function processCYTIRequest() {
     try {
         var unspentCYTIRequest = (shuffleArray(await getUnspentBoxesForAddressUpdated(CYTI_MINT_REQUEST_SCRIPT_ADDRESS)))
-            .filter( // remove unresolved
+            .filter( // remove resolved
                 box => box.boxId.substring(0, box.additionalRegisters["R7"].renderedValue.length) !== box.additionalRegisters["R7"].renderedValue
             )
-            .filter( // remove not processed
+            .filter( // remove already processed
                 box => !processedCYTIRequest.map(box2 => box2.boxId).includes(box.boxId)
-            )
-            ;
+            );
         if (unspentCYTIRequest.length === 0) {
             addToLog("CITY miner: No CYTI request box found");
             await sleep(config.MINER_COLD_DOWN * 1000);
@@ -82,12 +82,15 @@ async function processCYTIRequest() {
         } else {
             addToLog("CITY miner: " + unspentCYTIRequest.length + " request boxes found")
         }
+        const minerAddressSigmaPropHex = await addressToSigmaPropHex(config.MINER_ADDRESS);
         // Filter the requests with too low price from the config
         unspentCYTIRequest = unspentCYTIRequest.filter(
             box => (box.additionalRegisters["R7"].renderedValue.length === 2 && box.value >= config.MIN_ERG_PRICE_2_CHAR * NANOERG_TO_ERG) ||
                 (box.additionalRegisters["R7"].renderedValue.length === 4 && box.value >= config.MIN_ERG_PRICE_4_CHAR * NANOERG_TO_ERG) ||
                 (box.additionalRegisters["R7"].renderedValue.length === 6 && box.value >= config.MIN_ERG_PRICE_6_CHAR * NANOERG_TO_ERG) ||
-                (box.additionalRegisters["R7"].renderedValue.length === 8 && box.value >= config.MIN_ERG_PRICE_8_CHAR * NANOERG_TO_ERG)
+                (box.additionalRegisters["R7"].renderedValue.length === 8 && box.value >= config.MIN_ERG_PRICE_8_CHAR * NANOERG_TO_ERG) ||
+                // no price limit for own requests
+                (toHexString(Buffer.from(box.additionalRegisters.R6.serializedValue, 'hex')) === minerAddressSigmaPropHex) 
         )
         if (unspentCYTIRequest.length === 0) {
             addToLog("CITY miner: No CYTI request box found with suffisant price");

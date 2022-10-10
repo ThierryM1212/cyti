@@ -102,6 +102,12 @@ export async function sigmaPropToAddress(sigmaProp) {
     return (await ergolib).Address.recreate_from_ergo_tree((await ergolib).ErgoTree.from_base16_bytes("00" + sigmaProp)).to_base58();
 }
 
+export async function addressToSigmaPropHex(address) {
+    return toHexString((await ergolib).Constant.from_ecpoint_bytes(
+        (await ergolib).Address.from_base58(address).to_bytes(0x00).subarray(1, 34)
+    ).sigma_serialize_bytes());
+}
+
 export function ergToNano(erg) {
     if (erg === undefined) return 0
     if (erg.startsWith('.')) return parseInt(erg.slice(1) + '0'.repeat(9 - erg.length + 1))
