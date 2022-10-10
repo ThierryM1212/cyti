@@ -26,7 +26,7 @@ export const config = {
     // Number of try per process per tentative
     // Increase this value improve the average hashrate but there is a risk you continue to mine a contract that was already resolved
     // The check for new CITY contract is done after the number of iterations configured and the mining restarted.
-    "NUM_ITERATIONS": 50000,
+    "NUM_ITERATIONS": 100000,
 
     // Colors of table headers
     "COLOR_HEADER_1": "green",

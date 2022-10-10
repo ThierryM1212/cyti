@@ -1,7 +1,7 @@
 import JSONBigInt from 'json-bigint';
 import { CYTI_MINT_REQUEST_SCRIPT_ADDRESS, MIN_NANOERG_BOX_VALUE, TX_FEE } from './constants.js';
 import { currentHeight, sendTx } from './explorer.js';
-import { createTransaction, decodeStringArray, encodeHexConst, encodeStrConst, getRegisterValue, signTransaction } from './wasm.js';
+import { createTransaction, decodeStringArray, encodeHex, encodeHexConst, encodeStrConst, getErgoStateContext, getRegisterValue, signTransaction } from './wasm.js';
 import workerpool from 'workerpool';
 import { config as configFile } from '../config.js';
 import { getConfigUpdated } from './utils.js';
@@ -9,7 +9,7 @@ let ergolib = import('ergo-lib-wasm-nodejs');
 const config = getConfigUpdated(configFile);
 
 
-export async function processMintRequestParallel(mintRequestJSON, setCurrentHashRate) {
+export async function processMintRequestParallel(mintRequestJSON, requiredStartSequence, setCurrentHashRate) {
     const creationHeight = await currentHeight();
     const mintRequestWASM = (await ergolib).ErgoBox.from_json(JSONBigInt.stringify(mintRequestJSON))
     const mintRequestValueNano = mintRequestJSON.value - TX_FEE;
@@ -44,13 +44,22 @@ export async function processMintRequestParallel(mintRequestJSON, setCurrentHash
     // create a worker pool using an external worker script
     const pool = workerpool.pool('./src/worker.js', { workerType: 'process' });
 
+    if (config.DEBUG > 1) { // debug single thread
+        const res = await signWithNonce(tx, mintRequestJSON, requiredStartSequence, config.NUM_ITERATIONS, 0)
+    return;
+    }
+    
     // Launch parallel processing
     const promises = [];
     var workersHashRate = {};
     var totalHashRate = 0;
     for (let i = 0; i < config.PARALLEL_DEGREE; i++) {
         workersHashRate[i] = 0;
-        promises.push(pool.exec('signWithNonce', [JSONBigInt.stringify(tx), mintRequestJSON, config.NUM_ITERATIONS.toString(), i.toString()],
+        promises.push(pool.exec('signWithNonce', [tx, 
+            mintRequestJSON, 
+            requiredStartSequence,
+            config.NUM_ITERATIONS.toString(), 
+            i.toString()],
             {
                 on: function (payload) {
                     workersHashRate[payload.workerId] = payload.hashRate;
@@ -74,6 +83,64 @@ export async function processMintRequestParallel(mintRequestJSON, setCurrentHash
         console.log(e)
         return false;
     }
+}
+
+
+async function signWithNonce(unsignedTx, mintRequestJSON, requiredStartSequence, NUM_ITERATIONS, workerId) {
+    const unsignedTxStr = JSONBigInt.stringify(unsignedTx);
+    const wallet = (await ergolib).Wallet.from_mnemonic("", "");
+    const inputsWASM = (await ergolib).ErgoBoxes.from_boxes_json([mintRequestJSON]);
+    const dataInputsBoxes = (await ergolib).ErgoBoxes.from_boxes_json([]);
+    var ctx = await getErgoStateContext();
+    const start = Math.round(Math.random() * 10000000000);
+    //var unsignedTransaction, txIdWASM, ergoBox, boxIdWASM, unsignedTxWithNonce = '', boxId;
+    var startDate = new Date(), hashRate = 0;
+    var output0JSON = unsignedTx.outputs[0];
+    output0JSON["index"] = 0;
+    for (let i = start; i < start + parseInt(NUM_ITERATIONS); i++) {
+        if (i === start + 1000) {
+            hashRate = Math.round(1000 * 1000 / ((new Date()) - startDate), 2);
+            console.log("hashRate",hashRate)
+            startDate = new Date();
+        }
+        if (i % 10000 === 0) {
+            if (i > start + 10000) {
+                const hashRate = Math.round(10000 * 1000 / ((new Date()) - startDate), 2);
+                console.log("hashRate",hashRate)
+            }
+            startDate = new Date();
+        }
+        try {
+            const encodedNonce = await encodeHex(i.toString());
+            const unsignedTxWithNonce = unsignedTxStr.replace("#NONCE#", encodedNonce);
+            const unsignedTransaction = (await ergolib).UnsignedTransaction.from_json(unsignedTxWithNonce);
+            output0JSON.additionalRegisters["R9"] = encodedNonce;
+            const txIdWASM = unsignedTransaction.id();
+            output0JSON["transactionId"] = txIdWASM.to_str();
+            const ergoBox = (await ergolib).ErgoBox.from_json(JSON.stringify(output0JSON));
+            const boxIdWASM = ergoBox.box_id()
+            const boxId = boxIdWASM.to_str();
+            if (boxId.startsWith(requiredStartSequence)) {
+                const signedTx = wallet.sign_transaction(ctx, unsignedTransaction, inputsWASM, dataInputsBoxes).to_json();
+                //console.log("signedTx: ", signedTx)
+                const txId = await sendTx(JSONBigInt.parse(signedTx));
+                console.log("######################################");
+                console.log("CYTI miner txId", txId);
+                console.log("######################################");
+                return Promise.resolve(true);
+            }
+            unsignedTransaction.free();
+            ergoBox.free();
+            txIdWASM.free();
+            boxIdWASM.free();
+        } catch (e) {
+            //console.log(e)
+        }
+    }
+    wallet.free();
+    inputsWASM.free();
+    dataInputsBoxes.free();
+    return Promise.reject(false);
 }
 
 

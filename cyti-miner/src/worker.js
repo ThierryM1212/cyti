@@ -5,17 +5,17 @@ import { sendTx } from './explorer.js';
 let ergolib = import('ergo-lib-wasm-nodejs');
 
 
-async function signWithNonce(unsignedTxStr, mintRequestJSON, NUM_ITERATIONS, workerId) {
+async function signWithNonce(unsignedTx, mintRequestJSON, requiredStartSequence, NUM_ITERATIONS, workerId) {
+    const unsignedTxStr = JSONBigInt.stringify(unsignedTx);
     const wallet = (await ergolib).Wallet.from_mnemonic("", "");
     const inputsWASM = (await ergolib).ErgoBoxes.from_boxes_json([mintRequestJSON]);
     const dataInputsBoxes = (await ergolib).ErgoBoxes.from_boxes_json([]);
     var ctx = await getErgoStateContext();
-    //console.log("Start computation ", (new Date()).toISOString());
-    //const unsignedTxStr = JSONBigInt.stringify(unsignedTx);
-    var unsignedTransaction = (await ergolib).UnsignedTransaction.from_json(unsignedTxStr.replace("#NONCE#", await encodeHex('10')));
     const start = Math.round(Math.random() * 10000000000);
-    var startDate = new Date();
-    var hashRate = 0;
+    //var unsignedTransaction, txIdWASM, ergoBox, boxIdWASM, unsignedTxWithNonce = '', boxId;
+    var startDate = new Date(), hashRate = 0;
+    var output0JSON = unsignedTx.outputs[0];
+    output0JSON["index"] = 0;
     for (let i = start; i < start + parseInt(NUM_ITERATIONS); i++) {
         if (i === start + 1000) {
             hashRate = Math.round(1000 * 1000 / ((new Date()) - startDate), 2);
@@ -36,27 +36,36 @@ async function signWithNonce(unsignedTxStr, mintRequestJSON, NUM_ITERATIONS, wor
             startDate = new Date();
         }
         try {
-            const unsignedTxWithNonce = unsignedTxStr.replace("#NONCE#", await encodeHex(i.toString()))
-            unsignedTransaction = (await ergolib).UnsignedTransaction.from_json(unsignedTxWithNonce);
-            //unsignedTransaction.output_candidates().get(0).set_register_value(9, await encodeHex(i.toString()));
-            const signedTx = wallet.sign_transaction(ctx, unsignedTransaction, inputsWASM, dataInputsBoxes).to_json();
-            //console.log("Hashrate: "+ parseInt(NUM_ITERATIONS) * 1000 / ((new Date()) - startDate) + " H/s")
-            //console.log("End computation SUCCESS", signedTx, (new Date()).toISOString())
-            const txId = await sendTx(JSONBigInt.parse(signedTx));
-            console.log("######################################");
-            console.log("######################################");
-            console.log("CYTI miner txId", txId);
-            console.log("######################################");
-            console.log("######################################");
-            return Promise.resolve(true);
+            const encodedNonce = await encodeHex(i.toString());
+            const unsignedTxWithNonce = unsignedTxStr.replace("#NONCE#", encodedNonce);
+            const unsignedTransaction = (await ergolib).UnsignedTransaction.from_json(unsignedTxWithNonce);
+            output0JSON.additionalRegisters["R9"] = encodedNonce;
+            const txIdWASM = unsignedTransaction.id();
+            output0JSON["transactionId"] = txIdWASM.to_str();
+            const ergoBox = (await ergolib).ErgoBox.from_json(JSON.stringify(output0JSON));
+            const boxIdWASM = ergoBox.box_id()
+            const boxId = boxIdWASM.to_str();
+            if (boxId.startsWith(requiredStartSequence)) {
+                const signedTx = wallet.sign_transaction(ctx, unsignedTransaction, inputsWASM, dataInputsBoxes).to_json();
+                //console.log("signedTx: ", signedTx)
+                const txId = await sendTx(JSONBigInt.parse(signedTx));
+                console.log("######################################");
+                console.log("CYTI miner txId", txId);
+                console.log("######################################");
+                return Promise.resolve(true);
+            }
+            unsignedTransaction.free();
+            ergoBox.free();
+            txIdWASM.free();
+            boxIdWASM.free();
         } catch (e) {
             //console.log(e)
             unsignedTransaction.free();
+            ergoBox.free();
+            txIdWASM.free();
+            boxIdWASM.free();
         }
     }
-    //console.log("Hashrate: "+ Math.round(parseInt(NUM_ITERATIONS) * 1000 / ((new Date()) - startDate), 2) + " H/s")
-    //console.log("End computation FAILED " + (new Date()).toISOString())
-    unsignedTransaction.free();
     wallet.free();
     inputsWASM.free();
     dataInputsBoxes.free();

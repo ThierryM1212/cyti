@@ -98,10 +98,11 @@ async function processCYTIRequest() {
             return;
         }
         currentMinedBoxId = unspentCYTIRequest[0].boxId;
+        const requiredStartSequence = unspentCYTIRequest[0].additionalRegisters["R7"].renderedValue;
         addToLog("CITY miner: start mining " + currentMinedBoxId + " for " + formatERGAmount(unspentCYTIRequest[0].value)
-            + " ERG with starting pattern '" + unspentCYTIRequest[0].additionalRegisters["R7"].renderedValue + "'");
+            + " ERG with starting pattern '" + requiredStartSequence + "'");
 
-        const miningSuccess = await processMintRequestParallel(unspentCYTIRequest[0], setCurrentHashRate);
+        const miningSuccess = await processMintRequestParallel(unspentCYTIRequest[0], requiredStartSequence, setCurrentHashRate);
         addToLog("CITY miner success: " + miningSuccess.toString());
         currentMinedBoxId = '';
         setCurrentHashRate(0);
