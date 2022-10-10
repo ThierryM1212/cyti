@@ -73,17 +73,19 @@
 
 .btn-address {
   background: rgba(0, 0, 0, 0.1);
-  
 }
 
 .btn:active:enabled {
   transform: translateY(2px);
 }
 
+.btn:hover {
+  color: var(--my-text-color);
+}
+
 .btn:hover:enabled {
   box-shadow: 0 0 0 2px #1A5FEB;
   transition: 0.7s;
-  color: var(--my-text-color);
 }
 
 .btn-blue {
