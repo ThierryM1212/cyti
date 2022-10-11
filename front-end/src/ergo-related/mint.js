@@ -75,9 +75,12 @@ export async function mintCITYContract(tokName, tokDesc, tokAmount, tokDecimals,
     mintCYTIBoxBuilder.set_register_value(4, await encodeLong(tokenAmountAdjusted));
     const tokenMintInfos = [tokName, tokDesc, tokDecimals, NFT_TYPES[tokType], tokHash, tokURL];
     console.log("mint info", [tokName, tokDesc, tokDecimals, NFT_TYPES[tokType], tokHash, tokURL]);
-    const registerValue5 = tokenMintInfos.map((val) => {
-        return new Uint8Array(Buffer.from(Serializer.stringToHex(val), 'hex'))
-
+    const registerValue5 = tokenMintInfos.map((val, index) => {
+        if (index === 4) { // encode hash as hex
+            return new Uint8Array(Buffer.from(val, 'hex'))
+        } else {
+            return new Uint8Array(Buffer.from(Serializer.stringToHex(val), 'hex'))
+        }
     });
     mintCYTIBoxBuilder.set_register_value(5, (await ergolib).Constant.from_coll_coll_byte(registerValue5));
     const ownerSigmaProp = (await ergolib).Constant.from_ecpoint_bytes(

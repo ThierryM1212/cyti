@@ -1,7 +1,8 @@
-import { decodeHex, decodeLong, decodeStringArray, sigmaPropToAddress } from '../ergo-related/serializer';
+import { decodeHex, decodeLong, sigmaPropToAddress, toHexString } from '../ergo-related/serializer';
 import { getRegisterValue } from '../ergo-related/wasm';
 import { NFT_TYPES } from './constants';
-
+import {Serializer} from "@coinbarn/ergo-ts";
+let ergolib = import('ergo-lib-wasm-browser');
 
 export class CYTIRequest {
     constructor(boxJSON) {
@@ -23,7 +24,7 @@ export class CYTIRequest {
 
     async initialize() {
         this.tokAmount = await decodeLong(getRegisterValue(this.full, "R4"));
-        const tokInfo = await decodeStringArray(getRegisterValue(this.full, "R5"));
+        const tokInfo = await decodeR5Array(getRegisterValue(this.full, "R5"));
         this.tokName = tokInfo[0] ?? '';
         this.tokDesc = tokInfo[1] ?? '';
         this.tokDecimals = tokInfo[2] ?? '';
@@ -45,4 +46,15 @@ export class CYTIRequest {
         await o.initialize();
         return o;
     }
+}
+
+export async function decodeR5Array(encoded) {
+    return (await ergolib).Constant.decode_from_base16(encoded).to_coll_coll_byte().map((r, i) => {
+        if ( i === 4) {
+            return toHexString(r);
+        } else {
+            return Serializer.stringFromHex(toHexString(r));
+        }
+        
+    })
 }

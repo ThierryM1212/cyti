@@ -74,6 +74,17 @@ export async function decodeStringArray(encoded) {
     })
 }
 
+export async function decodeR5Array(encoded) {
+    return (await ergolib).Constant.decode_from_base16(encoded).to_coll_coll_byte().map((r, i) => {
+        if ( i === 4) {
+            return toHexString(r);
+        } else {
+            return Serializer.stringFromHex(toHexString(r));
+        }
+        
+    })
+}
+
 export async function encodeAddress(address) {
     const byteArray = (await ergolib).Address.from_mainnet_str(address).to_bytes();
     return (await ergolib).Constant.from_byte_array(byteArray);

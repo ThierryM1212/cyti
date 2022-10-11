@@ -1,7 +1,7 @@
 import JSONBigInt from 'json-bigint';
 import { CYTI_MINT_REQUEST_SCRIPT_ADDRESS, MIN_NANOERG_BOX_VALUE, TX_FEE } from './constants.js';
 import { currentHeight, sendTx } from './explorer.js';
-import { createTransaction, decodeStringArray, encodeHex, encodeHexConst, encodeStrConst, getErgoStateContext, getRegisterValue, signTransaction } from './wasm.js';
+import { createTransaction, decodeR5Array, encodeHex, encodeHexConst, encodeStrConst, getErgoStateContext, getRegisterValue, signTransaction } from './wasm.js';
 import workerpool from 'workerpool';
 import { config as configFile } from '../config.js';
 import { getConfigUpdated } from './utils.js';
@@ -174,12 +174,12 @@ export async function processMintResults(mintRequestJSON) {
             mintTokenBoxValue,
             (await ergolib).Contract.pay_to_address((await ergolib).Address.from_base58(minterAddress)),
             creationHeight);
-        const register5 = await decodeStringArray(getRegisterValue(mintRequestJSON, "R5"))
+        const register5 = await decodeR5Array(getRegisterValue(mintRequestJSON, "R5"))
         mintTokenBoxBuilder.set_register_value(4, await encodeStrConst(register5[0]))
         mintTokenBoxBuilder.set_register_value(5, await encodeStrConst(register5[1]))
         mintTokenBoxBuilder.set_register_value(6, await encodeStrConst(register5[2]))
         mintTokenBoxBuilder.set_register_value(7, await encodeStrConst(register5[3]))
-        mintTokenBoxBuilder.set_register_value(8, await encodeStrConst(register5[4]))
+        mintTokenBoxBuilder.set_register_value(8, await encodeHexConst(register5[4]))
         mintTokenBoxBuilder.set_register_value(9, await encodeStrConst(register5[5]))
         const mintTokenAmount = (await ergolib).TokenAmount.from_i64(mintRequestWASM.register_value(4).to_i64());
         const tokenId = (await ergolib).TokenId.from_str(mintRequestJSON.boxId);
