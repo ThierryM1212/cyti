@@ -19,7 +19,7 @@ export function formatERGAmount(amountStr) {
 export async function downloadAndSetSHA256(url) {
     try {
         const blob = await getBlob(url);
-        const hash = createHash('sha256').update(blob).digest('hex');
+        const hash = createHash('sha256').update(new Uint8Array(blob)).digest('hex');
         console.log("HASH", hash)
         return hash;
     } catch(e) {

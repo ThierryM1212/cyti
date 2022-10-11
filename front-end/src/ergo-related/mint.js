@@ -34,7 +34,7 @@ export async function mintSimpleToken(tokName, tokDesc, tokAmount, tokDecimals, 
     );
     mintBoxBuilder.mint_token(token, tokName, tokDesc, tokDecimals);
     mintBoxBuilder.set_register_value(7, await encodeStrConst(NFT_TYPES[tokType]));
-    mintBoxBuilder.set_register_value(8, await encodeStrConst(tokHash));
+    mintBoxBuilder.set_register_value(8, await encodeHexConst(tokHash));
     mintBoxBuilder.set_register_value(9, await encodeStrConst(tokURL));
     try {
         outputCandidates.add(mintBoxBuilder.build());

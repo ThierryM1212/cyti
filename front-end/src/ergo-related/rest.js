@@ -46,7 +46,7 @@ export async function getStream(url, apiKey = '') {
 
 export async function getBlob(url) {
     try {
-        const result = await fetch(url).then(res => res.blob());
+        const result = await fetch(url).then(res => res.arrayBuffer());
         return result;
     } catch (e) {
         console.error(e);
