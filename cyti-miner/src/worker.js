@@ -12,27 +12,16 @@ async function signWithNonce(unsignedTx, mintRequestJSON, requiredStartSequence,
     const dataInputsBoxes = (await ergolib).ErgoBoxes.from_boxes_json([]);
     var ctx = await getErgoStateContext();
     const start = Math.round(Math.random() * 10000000000);
-    //var unsignedTransaction, txIdWASM, ergoBox, boxIdWASM, unsignedTxWithNonce = '', boxId;
     var startDate = new Date(), hashRate = 0;
     var output0JSON = unsignedTx.outputs[0];
     output0JSON["index"] = 0;
     for (let i = start; i < start + parseInt(NUM_ITERATIONS); i++) {
-        if (i === start + 1000) {
+        if (i > start + 500 && i % 1000 === 0) {
             hashRate = Math.round(1000 * 1000 / ((new Date()) - startDate), 2);
             workerpool.workerEmit({
                 hashRate: hashRate,
                 workerId: workerId,
             });
-            startDate = new Date();
-        }
-        if (i % 10000 === 0) {
-            if (i > start + 10000) {
-                const hashRate = Math.round(10000 * 1000 / ((new Date()) - startDate), 2);
-                workerpool.workerEmit({
-                    hashRate: hashRate,
-                    workerId: workerId,
-                });
-            }
             startDate = new Date();
         }
         try {
