@@ -6,7 +6,7 @@ import Table from 'cli-table';
 import { config as configFile } from "./config.js";
 import express from 'express';
 import path from 'path';
-import { addressToSigmaPropHex, toHexString } from "./src/wasm.js";
+import { addressToSigmaPropHex, getUtxosListValue, toHexString } from "./src/wasm.js";
 
 
 // update configuration with env variables
@@ -20,12 +20,25 @@ var recentLog = [];
 var currentMinedBoxId = '';
 var currentHashRate = 0;
 var totalValueProcessed = 0;
-const generalInfoTableHeader = ["Running since", "Miner address", "Processes ",];
+var CYTIContratBalance = 0;
+var nbCYTIContracts = 0;
+const generalInfoTableHeader = ["Running since", "Miner address", "Processes", "Contracts", "Total amount"];
 const processInfoHeader = ["", "Processed", "Earnings", "Hashrate", "boxId"];
 
 function printStatus() {
     var generalInfoTable = new Table({ head: generalInfoTableHeader, style: { head: [config.COLOR_HEADER_1] } });
-    generalInfoTable.push([convertMsToTime(new Date() - startupDate), config.MINER_ADDRESS, config.PARALLEL_DEGREE,]);
+    var displayedMinerAddress = config.MINER_ADDRESS;
+    if (process.stdout.columns <= 78) {
+        displayedMinerAddress = formatLongString(displayedMinerAddress, 4);
+    } else if (process.stdout.columns > 78 && process.stdout.columns < 110) {
+        displayedMinerAddress = formatLongString(displayedMinerAddress, 4 + Math.round((process.stdout.columns - 71) / 2));
+    }
+    generalInfoTable.push([
+        convertMsToTime(new Date() - startupDate),
+        displayedMinerAddress,
+        config.PARALLEL_DEGREE,
+        nbCYTIContracts,
+        formatERGAmount(CYTIContratBalance)]);
     var processInfoTable = new Table({ head: processInfoHeader, style: { head: [config.COLOR_HEADER_2] }, });
     if (processedCYTIRequest.length > 0) {
         totalValueProcessed = processedCYTIRequest.map(box => box.value).reduce((a, b) => a + b);
@@ -75,12 +88,14 @@ async function processCYTIRequest() {
             .filter( // remove already processed
                 box => !processedCYTIRequest.map(box2 => box2.boxId).includes(box.boxId)
             );
-        if (unspentCYTIRequest.length === 0) {
+        nbCYTIContracts = unspentCYTIRequest.length;
+        CYTIContratBalance = getUtxosListValue(unspentCYTIRequest);
+        if (nbCYTIContracts === 0) {
             addToLog("CITY miner: No CYTI request box found");
             await sleep(config.MINER_COLD_DOWN * 1000);
             return;
         } else {
-            addToLog("CITY miner: " + unspentCYTIRequest.length + " request boxes found")
+            addToLog("CITY miner: " + nbCYTIContracts + " request boxes found")
         }
         const minerAddressSigmaPropHex = await addressToSigmaPropHex(config.MINER_ADDRESS);
         // Filter the requests with too low price from the config
@@ -90,7 +105,7 @@ async function processCYTIRequest() {
                 (box.additionalRegisters["R7"].renderedValue.length === 6 && box.value >= config.MIN_ERG_PRICE_6_CHAR * NANOERG_TO_ERG) ||
                 (box.additionalRegisters["R7"].renderedValue.length === 8 && box.value >= config.MIN_ERG_PRICE_8_CHAR * NANOERG_TO_ERG) ||
                 // no price limit for own requests
-                (toHexString(Buffer.from(box.additionalRegisters.R6.serializedValue, 'hex')) === minerAddressSigmaPropHex) 
+                (toHexString(Buffer.from(box.additionalRegisters.R6.serializedValue, 'hex')) === minerAddressSigmaPropHex)
         )
         if (unspentCYTIRequest.length === 0) {
             addToLog("CITY miner: No CYTI request box found with suffisant price");
@@ -157,6 +172,8 @@ app.get('/', function (req, res) {
         runningSince: convertMsToTime(new Date() - startupDate),
         minerAddress: config.MINER_ADDRESS,
         parallelProcesses: config.PARALLEL_DEGREE,
+        nbCYTIContracts: nbCYTIContracts,
+        CYTIContratBalance: formatERGAmount(CYTIContratBalance) + " ERG",
     });
 });
 app.listen(config.MINER_PORT);

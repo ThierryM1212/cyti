@@ -44,6 +44,10 @@ async function post(url, body = {}, apiKey = '') {
     }
 }
 
+async function getRequest(url) {
+    const res = await get(config.EXPLORER_API_URL + 'api/v1' + url, '')
+    return res;
+}
 async function getRequestV1(url) {
     const res = await get(config.EXPLORER_API_URL + 'api/v1' + url, '')
     return res.items;
@@ -164,7 +168,7 @@ export async function getSpentAndUnspentBoxesFromMempool(address) {
 
 export async function getUnspentBoxesForAddressUpdated(address) {
     try {
-        const boxesTmp = await getUnspentBoxesByAddress(address);
+        const boxesTmp = await getUnspentBoxesByAddress(address, 200);
         const [spentBlobs, newBlobs] = await getSpentAndUnspentBoxesFromMempool(address);
         const spentBlobBoxIds = spentBlobs.map(box => box.boxId);
         const boxes = newBlobs.concat(boxesTmp).filter(box => !spentBlobBoxIds.includes(box.boxId));
