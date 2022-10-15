@@ -44,7 +44,7 @@ export default function LoadButton(props) {
             }
             reader.readAsArrayBuffer(file)
         })
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     const { getRootProps, getInputProps } = useDropzone({
         onDrop,

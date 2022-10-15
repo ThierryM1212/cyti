@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
-import { RECOMMENDED_FEES, NANOERG_TO_ERG, TX_FEE, MIN_NANOERG_BOX_VALUE } from '../utils/constants';
-import { downloadAndSetSHA256, formatERGAmount } from '../utils/utils';
+import { RECOMMENDED_FEES, NANOERG_TO_ERG } from '../utils/constants';
+import { formatERGAmount } from '../utils/utils';
 import HelpToolTip from './HelpToolTip';
 import HelpImage from "../images/help_outline_blue_48dp.png";
 import ThemedSelect from './ThemedSelect';
@@ -111,8 +111,8 @@ export default class MintToken extends React.Component {
         });
         this.setTokenDecimals(decimals);
     };
-    async setTokenMediaAddress(addr) {
-        this.setState({ tokenMediaAddress: addr, tokenMediaHash: await downloadAndSetSHA256(addr) }, () => {
+    setTokenMediaAddress(addr) {
+        this.setState({ tokenMediaAddress: addr}, () => {
             this.state.updateHandler(this.state.id, this.getToken());
             //console.log("tokenMediaHash", this.state.tokenMediaHash)
         });
@@ -123,12 +123,13 @@ export default class MintToken extends React.Component {
         var CYTIFee = parseFloat(recommendedFee / NANOERG_TO_ERG).toFixed(4);
         if (this.state.nbTokens === 1 && fixedStartID === "") {
             recommendedFee = 0;
-            CYTIFee = CYTIFee;
+            CYTIFee = 0;
         }
         console.log("setTokenIDStart", recommendedFee, CYTIFee, fixedStartID);
         this.setState({
             tokenIDStart: fixedStartID,
             recommendedFee: recommendedFee,
+            fee: CYTIFee,
         }, () => {
             this.state.updateHandler(this.state.id, this.getToken());
         });
@@ -143,12 +144,6 @@ export default class MintToken extends React.Component {
         }, () => {
             this.state.updateHandler(this.state.id, this.getToken())
         });
-    }
-
-    async componentDidMount() {
-        if (this.state.tokenType !== 'Standard' && this.state.tokenMediaAddress !== "") {
-            await this.setTokenMediaAddress(this.state.tokenMediaAddress);
-        }
     }
 
     async componentDidUpdate(prevProps, prevState) {
@@ -170,10 +165,6 @@ export default class MintToken extends React.Component {
                 updateHandler: this.props.updateHandler,
             });
         }
-    }
-
-    componentDidMount() {
-        this.setTokenIDStart(this.state.tokenIDStart);
     }
 
     isValidTokenAmount = (amount) => {

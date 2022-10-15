@@ -5,6 +5,7 @@ import { getUtxos, walletSignTx } from "./wallet";
 import { Serializer } from "@coinbarn/ergo-ts";
 import { currentHeight } from "./explorer";
 import { createTransaction, getUtxosListValue } from "./wasm";
+import { downloadAndSetSHA256 } from "../utils/utils";
 let ergolib = import('ergo-lib-wasm-browser');
 
 /* global BigInt */
@@ -50,30 +51,33 @@ async function mintSimpleToken(tokName, tokDesc, tokAmount, tokDecimals, tokType
 
 
 export async function mintCITYContracts(tokenList, txFeeFloat) {
+    var fixedTokenList = [];
+    for (var tok of tokenList) {
+        // Adjust the CYTI fee to avoid stuck contracts
+        if (tok.idPattern === "" && parseFloat(tok.CYTIFee) < (TX_FEE + 2 * MIN_NANOERG_BOX_VALUE) / NANOERG_TO_ERG) {
+            tok.CYTIFee = (TX_FEE + 2 * MIN_NANOERG_BOX_VALUE) / NANOERG_TO_ERG
+        }
+        if (tok.idPattern !== "" && parseFloat(tok.CYTIFee) < (2 * TX_FEE + 2 * MIN_NANOERG_BOX_VALUE) / NANOERG_TO_ERG) {
+            tok.CYTIFee = (2 * TX_FEE + 2 * MIN_NANOERG_BOX_VALUE) / NANOERG_TO_ERG
+        }
+        // Compute the media hash if not provided
+        if (tok.type !== "Standard" && tok.mediaURL !== "" && tok.mediaHash === "") {
+            tok.mediaHash = await downloadAndSetSHA256(tok.mediaURL);
+        }
+        fixedTokenList.push(tok);
+    }
+
     // if only one token and no requirement on the start token ID, mint a simple token
-    if (tokenList && tokenList.length === 1 && tokenList[0].idPattern === "") {
-        return await mintSimpleToken(tokenList[0].name, tokenList[0].desc, tokenList[0].amount,
-            tokenList[0].decimals, tokenList[0].type, tokenList[0].mediaURL, tokenList[0].mediaHash,
+    if (fixedTokenList && fixedTokenList.length === 1 && fixedTokenList[0].idPattern === "") {
+        return await mintSimpleToken(fixedTokenList[0].name, fixedTokenList[0].desc, fixedTokenList[0].amount,
+            fixedTokenList[0].decimals, fixedTokenList[0].type, fixedTokenList[0].mediaURL, fixedTokenList[0].mediaHash,
             Math.round(txFeeFloat * NANOERG_TO_ERG)
         );
     }
 
     const alert = waitingAlert("Preparing the transaction...");
     const address = localStorage.getItem('address');
-
-    // Adjust the fee to avoid stuck contracts
-    var fixedFeeTokenList = [];
-    for (var token of tokenList) {
-        if (token.idPattern === "" && parseFloat(token.CYTIFee) < (TX_FEE + 2 * MIN_NANOERG_BOX_VALUE) / NANOERG_TO_ERG) {
-            token.CYTIFee = (TX_FEE + 2 * MIN_NANOERG_BOX_VALUE) / NANOERG_TO_ERG
-        }
-        if (token.idPattern !== "" && parseFloat(token.CYTIFee) < (2 * TX_FEE + 2 * MIN_NANOERG_BOX_VALUE) / NANOERG_TO_ERG) {
-            token.CYTIFee = (2 * TX_FEE + 2 * MIN_NANOERG_BOX_VALUE) / NANOERG_TO_ERG
-        }
-        fixedFeeTokenList.push(token);
-    }
-    var txAmount = Math.round((fixedFeeTokenList.reduce((acc, tok) => acc += parseFloat(tok.CYTIFee), 0)) * NANOERG_TO_ERG);
-
+    var txAmount = Math.round((fixedTokenList.reduce((acc, tok1) => acc += parseFloat(tok1.CYTIFee), 0)) * NANOERG_TO_ERG);
     const utxos = await getUtxos(txAmount + Math.round(parseFloat(txFeeFloat) * NANOERG_TO_ERG));
     const inputsWASM = (await ergolib).ErgoBoxes.from_boxes_json(utxos);
     const dataListWASM = new (await ergolib).ErgoBoxAssetsDataList();
@@ -84,12 +88,13 @@ export async function mintCITYContracts(tokenList, txFeeFloat) {
         (await ergolib).Address.from_base58(address).to_bytes(0x00).subarray(1, 34)
     );
 
-    for (var token of fixedFeeTokenList) {
+    for (var token of fixedTokenList) {
         const tokenAmountAdjusted = BigInt(token.amount * Math.pow(10, token.decimals)).toString();
         // fix required tokIdStart if number of char if odd
         if (token.idPattern.length % 2 === 1) {
             token.idPattern = token.idPattern + '0';
         }
+
         // MINT CYTI
         const txAmountBoxValue = (await ergolib).BoxValue.from_i64((await ergolib).I64.from_str((Math.round(token.CYTIFee * NANOERG_TO_ERG)).toString()));
         const mintCYTIBoxBuilder = new (await ergolib).ErgoBoxCandidateBuilder(
@@ -98,7 +103,7 @@ export async function mintCITYContracts(tokenList, txFeeFloat) {
             creationHeight);
         mintCYTIBoxBuilder.set_register_value(4, await encodeLong(tokenAmountAdjusted));
         const tokenMintInfos = [token.name, token.desc, token.decimals, NFT_TYPES[token.type], token.mediaHash, token.mediaURL];
-        console.log("mint info", [token.name, token.desc, token.decimals, NFT_TYPES[token.type], token.mediaHash, token.mediaURL]);
+        console.log("mint info", tokenMintInfos);
         const registerValue5 = tokenMintInfos.map((val, index) => {
             if (index === 4) { // encode hash as hex
                 return new Uint8Array(Buffer.from(val, 'hex'))
