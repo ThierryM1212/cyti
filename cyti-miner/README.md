@@ -26,36 +26,36 @@ The configuration of any value can be overidden by an enviroment variable with t
 This allow to run the provided haileypdll/cyti-miner with your configuration (see "Run docker image")
 
 ## Windows - cyti-miner.exe
-- Unzip the provided package.
-- Double click the exe or execute it using cmd.
+    Unzip the provided package.
+    Double click the exe or execute it using cmd.
 
 ## Linux (x64) - cyti-miner
-- untar the provided package.
-- run: ./cyti-miner
+    untar the provided package.
+    ```run: ./cyti-miner```
 
 ## cyti-miner.js (All platform)
 ### pre-requisites
-CYTI miner is tested and delivered with Nodejs 16.15.0
-It requires Nodejs >= 15 to run.
+    CYTI miner is tested and delivered with Nodejs 16.15.0
+    It requires Nodejs >= 15 to run.
 
 ### install
-npm i
+    npm i
 
 ### Run
-node cyti-miner.js
+    node cyti-miner.js
 
 ## Build executable
-This requires to install nexe, NASM and Visual Studio (Windows) or build-essentials (linux)
-npm run buildexe
+    This requires to install nexe, python 3, NASM and Visual Studio (Windows) or build-essentials (linux)
+    npm run buildexe
 
 ## Build docker image
-- Update the configuration file
-- docker run -p 4000:4000 cyti-miner 
+    - Update the configuration file
+    - docker run -p 4000:4000 cyti-miner
 
 ## Run haileypdll/cyti-miner docker image
-- docker pull haileypdll/cyti-miner:latest
-Provide the config parameter in the docker environment
-- docker run -e MINER_ADDRESS=9ezcf4GFUNVreCRyuPL99ihyumrM4JNsX4Cz9w7f3YBaPQC1pt1 -e PARALLEL_DEGREE=4 -p 4000:4000 haileypdll/cyti-miner:latest
+    - docker pull haileypdll/cyti-miner:latest
+    Provide the config parameter in the docker environment
+    - docker run -e MINER_ADDRESS=9ezcf4GFUNVreCRyuPL99ihyumrM4JNsX4Cz9w7f3YBaPQC1pt1 -e PARALLEL_DEGREE=4 -p 4000:4000 haileypdll/cyti-miner:latest
 
 # Overview
 ## Web UI
