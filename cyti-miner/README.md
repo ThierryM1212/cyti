@@ -52,4 +52,6 @@ npm run buildexe
 - docker run -p 4000:4000 cyti-miner 
 
 ## Run haileypdll/cyti-miner docker image
-- 
+- docker pull haileypdll/cyti-miner:latest
+Provide the config parameter in the docker environment
+- docker run -e MINER_ADDRESS=9ezcf4GFUNVreCRyuPL99ihyumrM4JNsX4Cz9w7f3YBaPQC1pt1 -e PARALLEL_DEGREE=4 -p 4000:4000 haileypdll/cyti-miner:latest
