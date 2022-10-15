@@ -29,5 +29,3 @@ The ErgoScriptCompiler jar can be downloaded at: https://github.com/ergoplatform
 With Python 3 installed:
 python compile.py all symbols.json
 
-
-

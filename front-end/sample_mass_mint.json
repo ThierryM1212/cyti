@@ -8,7 +8,7 @@
         "mediaURL": "",
         "mediaHash": "",
         "idPattern": "",
-        "CYTIFee": "0.042"
+        "CYTIFee": "0.031"
     },
     {
         "name": "my token name 2",
@@ -19,7 +19,7 @@
         "mediaURL": "",
         "mediaHash": "",
         "idPattern": "aaaa",
-        "CYTIFee": "0.042"
+        "CYTIFee": "0.01"
     },
     {
         "name": "my token name 3",
@@ -30,6 +30,6 @@
         "mediaURL": "https://as2.ftcdn.net/v2/jpg/00/36/17/73/1000_F_36177324_9ozYe67qQAaAlRkHOiyf6vIDanaFJHII.jpg",
         "mediaHash": "",
         "idPattern": "cccc",
-        "CYTIFee": "0.042"
+        "CYTIFee": "0.01"
     }
 ]
