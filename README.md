@@ -15,13 +15,25 @@ Given the performance of the provided miner the possible length are limited to: 
 A rough estimate of the mining difficulty depending on the length:
 
 Possible length, difficulty and with 2800 H/s:
-- 2 - Extremly easy (0.1s)
-- 4 - Easy (25s)
-- 6 - Hard (1h30mn)
-- 8 - Extremly hard (17 days)
+ - 2 - Extremly easy (0.1s)
+ - 4 - Easy (25s)
+ - 6 - Hard (1h30mn)
+ - 8 - Extremly hard (17 days)
 
 The CYTI contract is open to anyone without developper fee.
 More performant token miner could be implemented to reduce the computation time and increase the possible choice for the length of the patterns.
+
+ - The dApp front-end is deployed at: https://thierrym1212.github.io/cyti/index.html
+ - The miner is available at: https://github.com/ThierryM1212/cyti/releases
+
+# Compatible wallets
+|Platform            |Compatible wallet                                 |
+|--------------------|--------------------------------------------------|
+|Desktop browser     | Nautilus                                         |
+|Desktop browser     | SAFEW                                            |
+|Desktop browser     | Mosaic (ergopay)                                 |
+|Android             | Ergo wallet (ergopay)                            |
+|iOS                 | Terminus wallet (ergopay)                        |
 
 # Mass minting
 ## Presentation
