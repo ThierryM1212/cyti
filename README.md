@@ -43,7 +43,19 @@ For more than one token of if the token has a requirement on the token ID, one C
 
 ## Working with JSON file
 You can load and export a list of token definition in the UI to process the minting of several tokens in one transaction conveniently.
-The file format to follow is:
+
+## Details of token definition
+|Parameter|Description                                       |Requirement                                                    |Default  |
+|---------|--------------------------------------------------|---------------------------------------------------------------|---------|
+|name     | Name of the token                                | Non empty string                                              | None    |
+|type     | Type of the token                                | Standard; Picture; Audio; Video                               | Standard|
+|desc     | Description of the token                         | -                                                             | Empty   |
+|amount   | Amount of tokens to mint                         | Integer                                                       | 1       |
+|decimals | Number of decimals                               | Integer (0 to 9)                                              | 0       |
+|mediaURL | URL of the media for Picture; Audio or Video type| String                                                        | Empty   |
+|mediaHash| Hash SHA-256 of the content of the URL           | String                                                        | Empty   |
+|idPattern| Requirement for the fiest digits of the token ID | Hexadecimal string max 8 characters                           | Empty   |
+|CYTIFee  | Fee for the token ID miners                      | 0.0042 if idPattern non empty; min 0.0031 for empty id Pattern| 0.0042  |
 
 ## Limits
 - The limit depends on the size of the transaction.
