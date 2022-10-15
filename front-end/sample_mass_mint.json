@@ -1,0 +1,35 @@
+[
+    {
+        "name": "my token name 1",
+        "type": "Standard",
+        "desc": "my token desc 1\nHey Ho",
+        "amount": "1",
+        "decimals": "0",
+        "mediaURL": "",
+        "mediaHash": "",
+        "idPattern": "",
+        "CYTIFee": "0.042"
+    },
+    {
+        "name": "my token name 2",
+        "type": "Standard",
+        "desc": "my token desc 2\nHey Ho",
+        "amount": "1000",
+        "decimals": "3",
+        "mediaURL": "",
+        "mediaHash": "",
+        "idPattern": "aaaa",
+        "CYTIFee": "0.042"
+    },
+    {
+        "name": "my token name 3",
+        "type": "Picture",
+        "desc": "my token desc 3\nHey Ho",
+        "amount": "1000",
+        "decimals": "0",
+        "mediaURL": "https://as2.ftcdn.net/v2/jpg/00/36/17/73/1000_F_36177324_9ozYe67qQAaAlRkHOiyf6vIDanaFJHII.jpg",
+        "mediaHash": "",
+        "idPattern": "cccc",
+        "CYTIFee": "0.042"
+    }
+]

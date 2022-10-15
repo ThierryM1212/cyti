@@ -1,5 +1,6 @@
 import React from 'react';
 import { getUnconfirmedTxsFor, getUnspentBoxesForAddressUpdated } from '../ergo-related/explorer';
+import { refundAllMintRequests } from '../ergo-related/mint';
 import { toHexString } from '../ergo-related/serializer';
 import { CYTI_MINT_REQUEST_SCRIPT_ADDRESS } from '../utils/constants';
 import MintRequest from './MintRequest';
@@ -51,6 +52,7 @@ export default class MintRequests extends React.Component {
                 console.log("fetchMintRequests", e)
             }
         }
+        console.log();
         this.setState({
             userMintRequests: userMintRequests,
         })
@@ -78,6 +80,11 @@ export default class MintRequests extends React.Component {
                                         <MintRequest key={box.boxId + "_1"} cytiBoxJSON={box} />
                                     )
                                 }
+                            </div>
+                            <div>
+                                <button className='btn btn-blue'
+                                    onClick={() => refundAllMintRequests(this.state.userMintRequests)} >
+                                    Refund all</button>
                             </div>
                         </div>
                 }

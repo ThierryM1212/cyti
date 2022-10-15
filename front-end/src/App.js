@@ -1,9 +1,9 @@
 import './App.css';
 import React from 'react';
 import InputAddress from './components/InputAddress';
-import MintTokens from './components/MintTokens';
 import MintRequests from './components/MintRequests';
 import Footer from './components/Footer';
+import MintTabs from './components/MintTabs';
 
 export default class App extends React.Component {
 
@@ -27,8 +27,11 @@ export default class App extends React.Component {
             </div>
             <InputAddress />
           </div>
-
-          <MintTokens />
+          <div className="w-75 p-1 m-1">
+            <h4>Mint tokens</h4>
+            <h5>Use CYTI minable smart contract to choose your token ID</h5>
+          </div>
+          <MintTabs />
           <MintRequests />
         </div>
         <Footer />

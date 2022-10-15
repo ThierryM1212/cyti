@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import ReactTooltip from "react-tooltip";
-import HelpImage from "../images/help_outline_blue_48dp.png";
 
 
 export default function HelpToolTip(props) {
@@ -8,8 +7,8 @@ export default function HelpToolTip(props) {
         <Fragment>
             &nbsp;
             <div className="d-flex flex-column align-items-center">
-                <img className="armor"
-                    src={HelpImage}
+                <img
+                    src={props.image}
                     alt={"help tooltip"}
                     width="24px"
                     data-tip
