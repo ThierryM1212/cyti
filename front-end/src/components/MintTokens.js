@@ -42,6 +42,14 @@ export default class MintTokens extends React.Component {
             <Fragment >
                 <div className="w-100 card zonemint container p-1 m-1">
                     <div className='d-flex flex-row justify-content-left  m-1 p-1'>
+                        <label htmlFor="nbTokens" className='col-sm-4 d-flex align-items-center'>Number of tokens
+                        </label>
+                        <div className='w-100 d-flex flex-row justify-content-between align-items-center'>
+                            <div id="nbTokens" className='d-flex align-items-start'>{this.state.tokenList.length}</div>
+                            <div></div>
+                        </div>
+                    </div>
+                    <div className='d-flex flex-row justify-content-left  m-1 p-1'>
                         <label htmlFor="cytiFee" className='col-sm-4 d-flex align-items-center'>Total CYTI fee
                             <HelpToolTip image={HelpImage} id="feeToolTip0" html={
                                 <Fragment>
