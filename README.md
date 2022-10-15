@@ -63,9 +63,9 @@ Once a miner found it and send the transaction, the contract can be processed (b
 
 # Project structure
 ## contract
-CYTI contract and document associated
+[CYTI contract](contract/README.md) and document associated
 ## front-end
-React js UI to mint CYTI contract or normal tokens
+[React js UI to mint CYTI](front-end/README.md) contracts or normal tokens, allows mass minting of tokens.
 ## cyti-miner
-nodejs miner bot to mine and process the CYTI contracts
+[nodejs miner](cyti-miner/README.md) bot to mine and process the CYTI contracts
 
