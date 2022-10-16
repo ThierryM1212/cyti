@@ -21,11 +21,12 @@ https://github.com/ThierryM1212/cyti/blob/f04feba87cc46bcc9c9f748024e2cda7a2e7ee
 
 # Compile the contract
 ## Standard
-java -cp ErgoScriptCompiler-assembly-0.1.jar Compile cyti_mint_request.es symbols.json
+    java -cp ErgoScriptCompiler-assembly-0.1.jar Compile cyti_mint_request.es symbols.json
 
 The ErgoScriptCompiler jar can be downloaded at: https://github.com/ergoplatform/ergoscript-compiler/releases/download/v0.1/ErgoScriptCompiler-assembly-0.1.jar
 
 ## Generate javascript constants - compile.py
 With Python 3 installed:
-python compile.py all symbols.json
+
+    python compile.py all symbols.json
 
