@@ -4,6 +4,7 @@ import { TX_FEE, NANOERG_TO_ERG } from '../utils/constants';
 import { formatERGAmount } from '../utils/utils';
 import HelpToolTip from './HelpToolTip';
 import HelpImage from "../images/help_outline_blue_48dp.png";
+import { errorAlert } from '../utils/Alerts';
 
 
 export default class MintTokens extends React.Component {
@@ -32,7 +33,12 @@ export default class MintTokens extends React.Component {
     }
 
     async mintToken() {
-        await mintCITYContracts(this.state.tokenList, this.state.fee);
+        try {
+            await mintCITYContracts(this.state.tokenList, this.state.fee);
+        } catch (e) {
+            console.log(e);
+            errorAlert(e.toString())
+        }
     }
 
     render() {
