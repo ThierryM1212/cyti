@@ -6,7 +6,7 @@ When a CYTI contract is created the miners tries to find the right token ID, the
 The cyti-miner executable is available for Windows and Linux:<br />
 https://github.com/ThierryM1212/cyti/releases
 
-cyti-miner is open source and without no developper fee.
+cyti-miner is open source and without developper fee.
 
 # Usage
 Before using the cyti miner you will need to configure the mining address (to receive the fees) in the config.js file.<br />

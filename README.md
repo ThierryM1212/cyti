@@ -12,7 +12,6 @@ On the other side, token ID miners can run the mining software to collect fees a
 They can setup a minimal price for the mining for each length.
 
 Given the performance of the provided miner the possible length are limited to: 2, 4, 6, 8
-A rough estimate of the mining difficulty depending on the length:
 
 The CYTI contract is open to anyone without developper fee.
 More performant token miner could be implemented to reduce the computation time and increase the possible choice for the length of the patterns.
@@ -30,7 +29,7 @@ The CYTI contract includes:
 - the pattern for the start of the token ID (for example "aaaa" in the following diagram)
 - an amount of ERG to process the mining transactions and pay a fee to the miner processing them (min 0.042 ERG)
 
-This CYTI contract is refundable to the minter until it does not meet the requirement for the boxId.
+The CYTI contract is refundable to the minter until it does not meet the requirement for the boxId.
 
 Miners (running cyti-miner software) can try to find the right hash for the output box.
 
@@ -47,7 +46,7 @@ If only one token is minted without requirement in the token ID pattern, a simpl
 For more than one token of if the token has a requirement on the token ID, one CYTI contract will be created per token request.
 
 ## Working with JSON file
-You can load and export a list of token definition in the UI to process the minting of several tokens in one transaction conveniently.
+You can load and export a list of token definition in the UI to process the minting of several tokens in one transaction.
 
 ## Details of token definition
 |Parameter|Description                                       |Requirement                                                    |Default  |

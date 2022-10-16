@@ -18,7 +18,7 @@ The dApp is also deployed at: https://thierrym1212.github.io/cyti/index.html
 
 ## Choose the mining fee
 The miners can configure a minimal mining fee for each pattern length and will start mining the mint request only if the limit is reached.<br />
-The fee limit is removed when the miner address is the same than the token mint request.
+The fee limit is removed when the miner address is the same than the address of the token mint request.
 
 |Number of characters|Difficulty         |Minting time with 3kH/s|Suggested mint fee per token|
 |--------------------|-------------------|-----------------------|----------------------------|
