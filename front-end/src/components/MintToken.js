@@ -206,7 +206,7 @@ export default class MintToken extends React.Component {
     render() {
         return (
             <Fragment >
-                <div className="card zonemint container p-1 m-1">
+                <div className="card zonemint p-1 m-1">
                     <div className='d-flex flex-row justify-content-between align-items-end m-1 p-1'>
                         <label htmlFor="tokenType" className='col-sm-4 d-flex align-items-start'>Type</label>
                         <div className='w-100 d-flex flex-row'>

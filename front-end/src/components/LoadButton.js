@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import ReactTooltip from 'react-tooltip';
 import LoadImage from "../images/file_download_black_48dp.png";
-import { errorAlert } from '../utils/Alerts';
+import { errorAlert, waitingAlert } from '../utils/Alerts';
 import { tokenMintDescFromJSON } from '../utils/TokenMintDesc';
 
 
@@ -10,7 +10,7 @@ export default function LoadButton(props) {
     const onDrop = useCallback((acceptedFiles) => {
         acceptedFiles.forEach((file) => {
             const reader = new FileReader()
-
+            const alert = waitingAlert("Loading tokens...");
             reader.onabort = () => console.log('file reading was aborted')
             reader.onerror = () => console.log('file reading has failed')
             reader.onload = async () => {
@@ -33,6 +33,7 @@ export default function LoadButton(props) {
                             console.log("newToken", newToken)
                         }
                         props.loadTab(tokenList);
+                        alert.close();
                     } else {
                         errorAlert("Invalid json file, array is empty");
                         return;
@@ -43,7 +44,7 @@ export default function LoadButton(props) {
                 }
             }
             reader.readAsArrayBuffer(file)
-        })
+        })   
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     const { getRootProps, getInputProps } = useDropzone({
