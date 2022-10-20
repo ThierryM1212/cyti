@@ -51,7 +51,7 @@ function printStatus() {
     }
     processInfoTable.push({
         'CYTI miner': [processedCYTIRequest.length, formatERGAmount(totalValueProcessed) + " ERG",
-        currentHashRate + " H/s", displayedMinedBoxid,]
+        (parseInt(currentHashRate) / 1000000).toFixed(3) + " MH/s", displayedMinedBoxid,]
     },
         { 'CYTI results': [processedMintResults.length, '-', '-', '-',] });
 
@@ -101,9 +101,10 @@ async function processCYTIRequest() {
         // Filter the requests with too low price from the config
         unspentCYTIRequest = unspentCYTIRequest.filter(
             box => (box.additionalRegisters["R7"].renderedValue.length === 2 && box.value >= config.MIN_ERG_PRICE_2_CHAR * NANOERG_TO_ERG) ||
-                (box.additionalRegisters["R7"].renderedValue.length === 4 && box.value >= config.MIN_ERG_PRICE_4_CHAR * NANOERG_TO_ERG) ||
-                (box.additionalRegisters["R7"].renderedValue.length === 6 && box.value >= config.MIN_ERG_PRICE_6_CHAR * NANOERG_TO_ERG) ||
-                (box.additionalRegisters["R7"].renderedValue.length === 8 && box.value >= config.MIN_ERG_PRICE_8_CHAR * NANOERG_TO_ERG) ||
+                (box.additionalRegisters["R7"].renderedValue.length === 4 && box.value >= config.MIN_ERG_PRICE_4_CHAR * NANOERG_TO_ERG)    ||
+                (box.additionalRegisters["R7"].renderedValue.length === 6 && box.value >= config.MIN_ERG_PRICE_6_CHAR * NANOERG_TO_ERG)    ||
+                (box.additionalRegisters["R7"].renderedValue.length === 8 && box.value >= config.MIN_ERG_PRICE_8_CHAR * NANOERG_TO_ERG)    ||
+                (box.additionalRegisters["R7"].renderedValue.length === 10 && box.value >= config.MIN_ERG_PRICE_10_CHAR * NANOERG_TO_ERG)  ||
                 // no price limit for own requests
                 (toHexString(Buffer.from(box.additionalRegisters.R6.serializedValue, 'hex')) === minerAddressSigmaPropHex)
         )
@@ -117,11 +118,12 @@ async function processCYTIRequest() {
         addToLog("CITY miner: start mining " + currentMinedBoxId + " for " + formatERGAmount(unspentCYTIRequest[0].value)
             + " ERG with starting pattern '" + requiredStartSequence + "'");
 
-        const miningSuccess = await processMintRequestParallel(unspentCYTIRequest[0], requiredStartSequence, setCurrentHashRate);
+        const miningSuccess = await processMintRequestParallel(unspentCYTIRequest[0], setCurrentHashRate);
         addToLog("CITY miner success: " + miningSuccess.toString());
-        currentMinedBoxId = '';
-        setCurrentHashRate(0);
+
         if (miningSuccess && !processedCYTIRequest.map(box => box.boxId).includes(unspentCYTIRequest[0].boxId)) {
+            currentMinedBoxId = '';
+            setCurrentHashRate(0);
             processedCYTIRequest.push(unspentCYTIRequest[0]);
         }
         return miningSuccess;
@@ -163,7 +165,7 @@ app.get('/', function (req, res) {
         processedMintResults: processedMintResults,
         recentLog: recentLog.map(line => line.trim()),
         currentMinedBoxId: currentMinedBoxId,
-        currentHashRate: currentHashRate + " H/s",
+        currentHashRate: (parseInt(currentHashRate) / 1000000).toFixed(3) + " MH/s",
         totalValueProcessed: formatERGAmount(totalValueProcessed) + " ERG",
         generalInfoTableHeader: generalInfoTableHeader,
         processInfoHeader: processInfoHeader,

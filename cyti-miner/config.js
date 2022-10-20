@@ -9,10 +9,11 @@ export const config = {
     "MINER_PORT": 4000,
 
     // Minimal fee to start mining depending on the difficulty (ERG)
-    "MIN_ERG_PRICE_2_CHAR": 0.005,   // 1/256 valid
-    "MIN_ERG_PRICE_4_CHAR": 0.01,    // 1/65536 valid
-    "MIN_ERG_PRICE_6_CHAR": 0.1,     // 1/1677216 valid
-    "MIN_ERG_PRICE_8_CHAR": 1,       // 1/4294967296 valid
+    "MIN_ERG_PRICE_2_CHAR": 0.0042,   // 1/256 valid
+    "MIN_ERG_PRICE_4_CHAR": 0.0042,   // 1/65536 valid
+    "MIN_ERG_PRICE_6_CHAR": 0.0042,     // 1/1677216 valid
+    "MIN_ERG_PRICE_8_CHAR": 0.0042,      // 1/4294967296 valid
+    "MIN_ERG_PRICE_10_CHAR": 0.0042,       // 1/1099511627776 valid
 
     // Miner wait time when nothing to process (s)
     "MINER_COLD_DOWN": 20,
@@ -26,7 +27,7 @@ export const config = {
     // Number of try per process per tentative
     // Increase this value improve the average hashrate but there is a risk you continue to mine a contract that was already resolved
     // The check for new CITY contract is done after the number of iterations configured and the mining restarted.
-    "NUM_ITERATIONS": 100000,
+    "NUM_ITERATIONS": 100000000,
 
     // Colors of table headers
     "COLOR_HEADER_1": "green",

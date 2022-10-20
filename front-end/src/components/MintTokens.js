@@ -46,7 +46,7 @@ export default class MintTokens extends React.Component {
         const cytiFee = this.state.tokenList.reduce((acc, tok) => acc += parseFloat(tok.CYTIFee), 0);
         return (
             <Fragment >
-                <div className="w-100 card zonemint container p-1 m-1">
+                <div className="w-100 card zonemint p-1 m-1">
                     <div className='d-flex flex-row justify-content-left  m-1 p-1'>
                         <label htmlFor="nbTokens" className='col-sm-4 d-flex align-items-center'>Number of tokens
                         </label>

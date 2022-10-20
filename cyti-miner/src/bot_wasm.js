@@ -9,45 +9,14 @@ let ergolib = import('ergo-lib-wasm-nodejs');
 const config = getConfigUpdated(configFile);
 
 
-export async function processMintRequestParallel(mintRequestJSON, requiredStartSequence, setCurrentHashRate) {
-    const creationHeight = await currentHeight();
-    const mintRequestWASM = (await ergolib).ErgoBox.from_json(JSONBigInt.stringify(mintRequestJSON))
-    const mintRequestValueNano = mintRequestJSON.value - TX_FEE;
-    const mintRequestBoxValue = (await ergolib).BoxValue.from_i64((await ergolib).I64.from_str(mintRequestValueNano.toString()));
-    const outputCandidates = (await ergolib).ErgoBoxCandidates.empty();
-    const mintRequestBoxBuilder = new (await ergolib).ErgoBoxCandidateBuilder(
-        mintRequestBoxValue,
-        (await ergolib).Contract.pay_to_address((await ergolib).Address.from_base58(CYTI_MINT_REQUEST_SCRIPT_ADDRESS)),
-        creationHeight);
-    mintRequestBoxBuilder.set_register_value(4, mintRequestWASM.register_value(4))
-    mintRequestBoxBuilder.set_register_value(5, mintRequestWASM.register_value(5))
-    mintRequestBoxBuilder.set_register_value(6, mintRequestWASM.register_value(6))
-    mintRequestBoxBuilder.set_register_value(7, mintRequestWASM.register_value(7))
-    const minerSigmaProp = (await ergolib).Constant.from_ecpoint_bytes(
-        (await ergolib).Address.from_base58(config.MINER_ADDRESS).to_bytes(0x00).subarray(1, 34)
-    );
-    mintRequestBoxBuilder.set_register_value(8, minerSigmaProp);
-    mintRequestBoxBuilder.set_register_value(9, await encodeHexConst('00'));
-    try {
-        outputCandidates.add(mintRequestBoxBuilder.build());
-    } catch (e) {
-        console.log(`CYTI miner building error: ${e}`);
-        throw e;
-    }
-    const inputsWASM = (await ergolib).ErgoBoxes.from_boxes_json([mintRequestJSON]);
-    const dataListWASM = new (await ergolib).ErgoBoxAssetsDataList();
-    const boxSelection = new (await ergolib).BoxSelection(inputsWASM, dataListWASM);
-    const tx = await createTransaction(boxSelection, outputCandidates, [], config.MINER_ADDRESS, [mintRequestJSON]);
-    //console.log("tx", tx);
-    tx.outputs[0].additionalRegisters["R9"] = "#NONCE#";
-
+export async function processMintRequestParallel(mintRequestJSON, setCurrentHashRate) {
     // create a worker pool using an external worker script
     const pool = workerpool.pool('./src/worker.js', { workerType: 'process' });
 
-    if (config.DEBUG > 1) { // debug single thread
-        const res = await signWithNonce(tx, mintRequestJSON, requiredStartSequence, config.NUM_ITERATIONS, 0)
-    return;
-    }
+    //if (config.DEBUG > 1) { // debug single thread
+    //    const res = await signWithNonce(tx, mintRequestJSON, requiredStartSequence, config.NUM_ITERATIONS, 0)
+    //return;
+    //}
     
     // Launch parallel processing
     const promises = [];
@@ -55,9 +24,9 @@ export async function processMintRequestParallel(mintRequestJSON, requiredStartS
     var totalHashRate = 0;
     for (let i = 0; i < config.PARALLEL_DEGREE; i++) {
         workersHashRate[i] = 0;
-        promises.push(pool.exec('signWithNonce', [tx, 
+        promises.push(pool.exec('signWithNonce', [
             mintRequestJSON, 
-            requiredStartSequence,
+            config.MINER_ADDRESS,
             config.NUM_ITERATIONS.toString(), 
             i.toString()],
             {
@@ -83,64 +52,6 @@ export async function processMintRequestParallel(mintRequestJSON, requiredStartS
         console.log(e)
         return false;
     }
-}
-
-
-async function signWithNonce(unsignedTx, mintRequestJSON, requiredStartSequence, NUM_ITERATIONS, workerId) {
-    const unsignedTxStr = JSONBigInt.stringify(unsignedTx);
-    const wallet = (await ergolib).Wallet.from_mnemonic("", "");
-    const inputsWASM = (await ergolib).ErgoBoxes.from_boxes_json([mintRequestJSON]);
-    const dataInputsBoxes = (await ergolib).ErgoBoxes.from_boxes_json([]);
-    var ctx = await getErgoStateContext();
-    const start = Math.round(Math.random() * 10000000000);
-    //var unsignedTransaction, txIdWASM, ergoBox, boxIdWASM, unsignedTxWithNonce = '', boxId;
-    var startDate = new Date(), hashRate = 0;
-    var output0JSON = unsignedTx.outputs[0];
-    output0JSON["index"] = 0;
-    for (let i = start; i < start + parseInt(NUM_ITERATIONS); i++) {
-        if (i === start + 1000) {
-            hashRate = Math.round(1000 * 1000 / ((new Date()) - startDate), 2);
-            console.log("hashRate",hashRate)
-            startDate = new Date();
-        }
-        if (i % 10000 === 0) {
-            if (i > start + 10000) {
-                const hashRate = Math.round(10000 * 1000 / ((new Date()) - startDate), 2);
-                console.log("hashRate",hashRate)
-            }
-            startDate = new Date();
-        }
-        try {
-            const encodedNonce = await encodeHex(i.toString());
-            const unsignedTxWithNonce = unsignedTxStr.replace("#NONCE#", encodedNonce);
-            const unsignedTransaction = (await ergolib).UnsignedTransaction.from_json(unsignedTxWithNonce);
-            output0JSON.additionalRegisters["R9"] = encodedNonce;
-            const txIdWASM = unsignedTransaction.id();
-            output0JSON["transactionId"] = txIdWASM.to_str();
-            const ergoBox = (await ergolib).ErgoBox.from_json(JSON.stringify(output0JSON));
-            const boxIdWASM = ergoBox.box_id()
-            const boxId = boxIdWASM.to_str();
-            if (boxId.startsWith(requiredStartSequence)) {
-                const signedTx = wallet.sign_transaction(ctx, unsignedTransaction, inputsWASM, dataInputsBoxes).to_json();
-                //console.log("signedTx: ", signedTx)
-                const txId = await sendTx(JSONBigInt.parse(signedTx));
-                console.log("######################################");
-                console.log("CYTI miner txId", txId);
-                console.log("######################################");
-                return Promise.resolve(true);
-            }
-            unsignedTransaction.free();
-            ergoBox.free();
-            txIdWASM.free();
-            boxIdWASM.free();
-        } catch (e) {
-            //console.log(e)
-        }
-    }
-    wallet.free();
-    inputsWASM.free();
-    dataInputsBoxes.free();
-    return Promise.reject(false);
 }
 
 
