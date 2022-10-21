@@ -15,6 +15,7 @@
     "cli-table": "^0.3.11",
     "crypto-js": "^4.1.1",
     "ejs": "^3.1.8",
+    "ergo-cyti-wasm-nodejs": "^0.1.0",
     "ergo-lib-wasm-nodejs": "^0.20.1",
     "express": "^4.18.1",
     "json-bigint": "^1.0.0",

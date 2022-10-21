@@ -2,7 +2,7 @@ import workerpool from 'workerpool';
 import { getErgoStateContext } from './wasm.js';
 import JSONBigInt from 'json-bigint';
 import { sendTx } from './explorer.js';
-import { try_calculate_tx, ErgoBox, Address } from 'ergo_cyti_wasm';
+import { try_calculate_tx, ErgoBox, Address } from 'ergo-cyti-wasm-nodejs';
 let ergolib = import('ergo-lib-wasm-nodejs');
 
 async function signWithNonce(mintRequestJSON, minerAddressStr, NUM_ITERATIONS, workerId) {
