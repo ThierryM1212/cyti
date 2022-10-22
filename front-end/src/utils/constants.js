@@ -18,10 +18,10 @@ export const RECOMMENDED_FEES = [
     0.0042 * NANOERG_TO_ERG,            // 2 char
     0.0042 * NANOERG_TO_ERG,            // 4 char
     0.0042 * NANOERG_TO_ERG,            // 4 char
-    0.01 * NANOERG_TO_ERG,              // 6 char
-    0.01 * NANOERG_TO_ERG,              // 6 char
-    0.1 * NANOERG_TO_ERG,               // 8 char 
-    0.1 * NANOERG_TO_ERG,               // 8 char  
+    0.0042 * NANOERG_TO_ERG,            // 6 char
+    0.0042 * NANOERG_TO_ERG,            // 6 char
+    0.05 * NANOERG_TO_ERG,              // 8 char 
+    0.05 * NANOERG_TO_ERG,              // 8 char  
     1 * NANOERG_TO_ERG,                 // 10 char 
     1 * NANOERG_TO_ERG,                 // 10 char  
 ];

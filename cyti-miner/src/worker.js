@@ -14,9 +14,9 @@ async function signWithNonce(mintRequestJSON, minerAddressStr, NUM_ITERATIONS, w
         var start = BigInt(Math.round(Math.random() * 1000000000000));
         const minerAddress = Address.from_mainnet_str(minerAddressStr)
         const box = ErgoBox.from_json(JSONBigInt.stringify(mintRequestJSON))
-        const number_of_try_per_round = BigInt(5000000);
+        const number_of_try_per_round = BigInt(5000000); // batch per 5M
         
-        var rangeTable = [start, start + BigInt(500000)];
+        var rangeTable = [start, start + BigInt(10000), start + BigInt(300000)]; // get first hashrate estimation after 300k
         while (rangeTable[rangeTable.length - 1] < start + BigInt(NUM_ITERATIONS)) {
             rangeTable.push(rangeTable[rangeTable.length - 1] + number_of_try_per_round);
         }

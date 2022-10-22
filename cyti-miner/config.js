@@ -11,8 +11,8 @@ export const config = {
     // Minimal fee to start mining depending on the difficulty (ERG)
     "MIN_ERG_PRICE_2_CHAR": 0.0042,   // 1/256 valid
     "MIN_ERG_PRICE_4_CHAR": 0.0042,   // 1/65536 valid
-    "MIN_ERG_PRICE_6_CHAR": 0.01,     // 1/1677216 valid
-    "MIN_ERG_PRICE_8_CHAR": 0.1,      // 1/4294967296 valid
+    "MIN_ERG_PRICE_6_CHAR": 0.0042,   // 1/1677216 valid
+    "MIN_ERG_PRICE_8_CHAR": 0.05,     // 1/4294967296 valid
     "MIN_ERG_PRICE_10_CHAR": 1,       // 1/1099511627776 valid
 
     // Miner wait time when nothing to process (s)
