@@ -11,7 +11,7 @@ The difficulty increase exponentially with the length of the pattern requested.
 On the other side, token ID miners can run the mining software to collect fees and compute the right hash.
 They can setup a minimal price for the mining for each length.
 
-Given the performance of the provided miner the possible length are limited to: 2, 4, 6, 8
+Given the performance of the provided miner the possible length are limited to: 2, 4, 6, 8, 10
 
 The CYTI contract is open to anyone without developper fee.
 More performant token miner could be implemented to reduce the computation time and increase the possible choice for the length of the patterns.
@@ -80,13 +80,14 @@ https://github.com/ThierryM1212/cyti/blob/84afa577da2a9b45f84f913893aedba76e19b3
 The miners can configure a minimal mining fee for each pattern length and will start mining the mint request only if the limit is reached.<br />
 The fee limit is removed when the miner address is the same than the token mint request.
 
-|Number of characters|Difficulty         |Minting time with 3kH/s|Suggested mint fee per token|
+|Number of characters|Difficulty         |Minting time with 3MH/s|Suggested mint fee per token|
 |--------------------|-------------------|-----------------------|----------------------------|
 |0                   | No mining required| 0s                    | 0.0031 ERG                 |
-|1 or 2              | Extremly easy     | 0.1s                  | 0.005 ERG                  |
-|3 or 4              | Easy              | 25s                   | 0.01 ERG                   |
-|5 or 6              | Hard              | 1h30mn                | 0.1 ERG                    |
-|7 or 8              | Very Hard         | 17 days               | 1 ERG                      |
+|1 or 2              | Extremly easy     | > 1s                  | 0.0042 ERG                 |
+|3 or 4              | Easy              | > 1s                  | 0.0042 ERG                 |
+|5 or 6              | Easy              | > 1s                  | 0.0042 ERG                 |
+|7 or 8              | Hard              | 10 mn                 | 0.1 ERG                    |
+|9 or 10             | Very Hard         | 2 days                | 1 ERG                      |
 
 
 # Compatible wallets

@@ -20,13 +20,14 @@ The dApp is also deployed at: https://thierrym1212.github.io/cyti/index.html
 The miners can configure a minimal mining fee for each pattern length and will start mining the mint request only if the limit is reached.<br />
 The fee limit is removed when the miner address is the same than the address of the token mint request.
 
-|Number of characters|Difficulty         |Minting time with 3kH/s|Suggested mint fee per token|
+|Number of characters|Difficulty         |Minting time with 3MH/s|Suggested mint fee per token|
 |--------------------|-------------------|-----------------------|----------------------------|
 |0                   | No mining required| 0s                    | 0.0031 ERG                 |
-|1 or 2              | Extremly easy     | 0.1s                  | 0.005 ERG                  |
-|3 or 4              | Easy              | 25s                   | 0.01 ERG                   |
-|5 or 6              | Hard              | 1h30mn                | 0.1 ERG                    |
-|7 or 8              | Very Hard         | 17 days               | 1 ERG                      |
+|1 or 2              | Extremly easy     | > 1s                  | 0.0042 ERG                 |
+|3 or 4              | Easy              | > 1s                  | 0.0042 ERG                 |
+|5 or 6              | Easy              | > 1s                  | 0.0042 ERG                 |
+|7 or 8              | Hard              | 10 mn                 | 0.1 ERG                    |
+|9 or 10             | Very Hard         | 2 days                | 1 ERG                      |
 
 ## Run the front-end
 
