@@ -48,6 +48,7 @@ export async function connectWallet() {
             if (!alreadyConnected) {
                 await sleep(100)
                 const res = await window.ergo_request_read_access();
+                await sleep(100); // need to fix SAFEW to remove this wait...
                 return res
             } else {
                 return true;
