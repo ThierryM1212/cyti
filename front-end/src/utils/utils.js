@@ -1,6 +1,6 @@
 import { getBlob } from "../ergo-related/rest";
 import { NANOERG_TO_ERG } from "./constants";
-const { createHash } = require('crypto');
+import { createHash } from "crypto";
 
 
 export function formatLongString(str, num) {

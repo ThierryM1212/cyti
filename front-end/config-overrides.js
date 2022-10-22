@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 process.env.GENERATE_SOURCEMAP = 'false';
 
 module.exports = function override(config, env) {
@@ -46,6 +47,8 @@ module.exports = function override(config, env) {
       Buffer: ['buffer', 'Buffer']
     })
   ])
+
+  config.resolve.plugins = config.resolve.plugins.filter(plugin => !(plugin instanceof ModuleScopePlugin));
 
   return config;
 };
