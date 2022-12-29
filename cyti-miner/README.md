@@ -1,6 +1,6 @@
 # CYTI miner
 
-Miner software to mint CYTI contracts and to generate the token ID following the requested pattern.
+Miner software to mint CYTI contracts and generate the token ID following the requested pattern.
 When a CYTI contract is created the miners try to find the right token ID. The first miner to find it gets the fee (ERG).
 
 The cyti-miner executable is available for Windows and Linux:<br />
