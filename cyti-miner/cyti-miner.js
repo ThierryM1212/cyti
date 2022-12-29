@@ -91,11 +91,11 @@ async function processCYTIRequest() {
         nbCYTIContracts = unspentCYTIRequest.length;
         CYTIContratBalance = getUtxosListValue(unspentCYTIRequest);
         if (nbCYTIContracts === 0) {
-            addToLog("CITY miner: No CYTI request box found");
+            addToLog("CYTI miner: No CYTI request box found");
             await sleep(config.MINER_COLD_DOWN * 1000);
             return;
         } else {
-            addToLog("CITY miner: " + nbCYTIContracts + " request boxes found")
+            addToLog("CYTI miner: " + nbCYTIContracts + " request boxes found")
         }
         const minerAddressSigmaPropHex = await addressToSigmaPropHex(config.MINER_ADDRESS);
         // Filter the requests with too low price from the config
@@ -109,17 +109,17 @@ async function processCYTIRequest() {
                 (toHexString(Buffer.from(box.additionalRegisters.R6.serializedValue, 'hex')) === minerAddressSigmaPropHex)
         )
         if (unspentCYTIRequest.length === 0) {
-            addToLog("CITY miner: No CYTI request box found with suffisant price");
+            addToLog("CYTI miner: No CYTI request box found with suffisant price");
             await sleep(config.MINER_COLD_DOWN * 1000);
             return;
         }
         currentMinedBoxId = unspentCYTIRequest[0].boxId;
         const requiredStartSequence = unspentCYTIRequest[0].additionalRegisters["R7"].renderedValue;
-        addToLog("CITY miner: start mining " + currentMinedBoxId + " for " + formatERGAmount(unspentCYTIRequest[0].value)
+        addToLog("CYTI miner: start mining " + currentMinedBoxId + " for " + formatERGAmount(unspentCYTIRequest[0].value)
             + " ERG with starting pattern '" + requiredStartSequence + "'");
 
         const miningSuccess = await processMintRequestParallel(unspentCYTIRequest[0], setCurrentHashRate);
-        addToLog("CITY miner success: " + miningSuccess.toString());
+        addToLog("CYTI miner success: " + miningSuccess.toString());
 
         if (miningSuccess && !processedCYTIRequest.map(box => box.boxId).includes(unspentCYTIRequest[0].boxId)) {
             currentMinedBoxId = '';
@@ -128,7 +128,7 @@ async function processCYTIRequest() {
         }
         return miningSuccess;
     } catch (e) {
-        addToLog("CITY miner global: " + e.toString())
+        addToLog("CYTI miner global: " + e.toString())
     }
 }
 
