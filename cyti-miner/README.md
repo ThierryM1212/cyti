@@ -1,12 +1,12 @@
 # CYTI miner
 
-Miner software to mint CYTI contracts and generates the token ID following the requested pattern.
-When a CYTI contract is created the miners tries to find the right token ID, the first miner finding it get the fee (ERG).
+Miner software to mint CYTI contracts and generate the token ID following the requested pattern.
+When a CYTI contract is created, the miners try to find the right token ID. The first miner to find it gets the fee (ERG).
 
 The cyti-miner executable is available for Windows and Linux:<br />
 https://github.com/ThierryM1212/cyti/releases
 
-cyti-miner is open source and without developper fee.
+cyti-miner is open source and without developer fee.
 
 # Usage
 Before using the cyti miner you will need to configure the mining address (to receive the fees) in the config.js file.<br />
@@ -80,7 +80,7 @@ In the console only some other modifier are available:
 
 # Overview
 ## Web UI
-![CITY miner web UI](./miner_web_UI.png)
+![CYTI miner web UI](./miner_web_UI.png)
 
 ## Console UI
-![CITY miner console UI](./miner_console_UI.png)
+![CYTI miner console UI](./miner_console_UI.png)
