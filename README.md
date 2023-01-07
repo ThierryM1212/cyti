@@ -1,6 +1,7 @@
 # CYTI - Choose Your Token ID
 
-The project was made in the context of the Ergohack V.
+The project was made in the context of the Ergohack V and was awarded with the first place.
+https://ergoplatform.org/en/blog/ErgoHack-5-Results/
 
 The goal is to provide a decentralized service allowing token minter to choose a specific pattern for the beginning of their token ID.
 This can be convenient and add some values to the tokens or token collections.
