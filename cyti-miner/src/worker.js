@@ -1,7 +1,7 @@
 import workerpool from 'workerpool';
 import { getErgoStateContext } from './wasm.js';
 import JSONBigInt from 'json-bigint';
-import { sendTx } from './explorer.js';
+import { currentHeight, sendTx } from './explorer.js';
 import { try_calculate_tx, ErgoBox, Address } from 'ergo-cyti-wasm-nodejs';
 let ergolib = import('ergo-lib-wasm-nodejs');
 
@@ -23,7 +23,8 @@ async function signWithNonce(mintRequestJSON, minerAddressStr, NUM_ITERATIONS, w
 
         for (var i = 0; i < rangeTable.length - 1; i++) {
             var now = process.hrtime.bigint();
-            var solved = try_calculate_tx(box, 0, minerAddress, rangeTable[i], rangeTable[i+1]);
+            var creationHeight = await currentHeight();
+            var solved = try_calculate_tx(box, creationHeight, minerAddress, rangeTable[i], rangeTable[i+1]);
             var elapsedSeconds = Number((process.hrtime.bigint() - now)) / 1000000000.0;
             var hashRate = Math.round(Number(rangeTable[i+1] - rangeTable[i]) / elapsedSeconds, 2);
             //console.log(workerId, hashRate, start, start + number_of_try_per_round)
