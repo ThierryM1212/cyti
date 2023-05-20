@@ -4,7 +4,6 @@ Front end to mint simple tokens or CYTI contracts, with mass minting feature.<br
 CYTI contracts allows to choose the begining of the tokenID minted.<br />
 They are mined to compute the proper transaction to generates the token as per your requirement miners will handle them if the fee is high enough for the token length required.<br />
 
-The dApp is running on FLUX: https://cytiminter.app.runonflux.io/<br />
 The dApp is also deployed at: https://thierrym1212.github.io/cyti/index.html
 
 ## Supported wallets

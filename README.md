@@ -17,7 +17,6 @@ Given the performance of the provided miner the possible length are limited to: 
 The CYTI contract is open to anyone without developper fee.
 More performant token miner could be implemented to reduce the computation time and increase the possible choice for the length of the patterns.
 
- - The dApp front-end is running on FLUX: https://cytiminter.app.runonflux.io/
  - The dApp front-end is also deployed at: https://thierrym1212.github.io/cyti/index.html
  - The miner is available at: https://github.com/ThierryM1212/cyti/releases
 
