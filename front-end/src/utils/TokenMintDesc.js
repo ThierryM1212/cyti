@@ -68,11 +68,7 @@ export async function tokenMintDescFromJSON(token) {
             errorAlert("Invalid token decimals");
             return;
         }
-        if (newToken["type"] !== 'Standard') {
-            newToken["decimals"] = "0";
-        } else {
-            newToken["decimals"] = token["decimals"];
-        }
+        newToken["decimals"] = token["decimals"];
     } else {
         newToken["decimals"] = "0";
     }

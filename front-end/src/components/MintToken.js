@@ -82,9 +82,7 @@ export default class MintToken extends React.Component {
     };
     setTokenDecimals = (dec) => {
         this.setState({
-            tokenDecimals: dec,
-            tokenMediaAddress: '',
-            tokenMediaHash: '',
+            tokenDecimals: dec
         });
         if (dec === '0') {
             this.setTokenAmount(this.state.tokenAmount.split('.')[0]);
@@ -102,17 +100,20 @@ export default class MintToken extends React.Component {
         }
     };
     setTokenType = (type) => {
-        var decimals = this.state.tokenDecimals;
-        if (type !== 'Standard') {
-            decimals = '0';
+        var tokenMediaAddress = this.state.tokenMediaAddress;
+        var tokenMediaHash = this.state.tokenMediaHash;
+        if (type === 'Standard') {
+            tokenMediaAddress = '';
+            tokenMediaHash = '';
         }
         this.setState({
             tokenType: type,
+            tokenMediaAddress: tokenMediaAddress,
+            tokenMediaHash: tokenMediaHash,
         });
-        this.setTokenDecimals(decimals);
     };
     setTokenMediaAddress(addr) {
-        this.setState({ tokenMediaAddress: addr}, () => {
+        this.setState({ tokenMediaAddress: addr }, () => {
             this.state.updateHandler(this.state.id, this.getToken());
             //console.log("tokenMediaHash", this.state.tokenMediaHash)
         });
@@ -136,7 +137,7 @@ export default class MintToken extends React.Component {
     };
     setFee = (feeFloat) => {
         var fixedFee = parseFloat(0).toFixed(4);
-        if(feeFloat) {
+        if (feeFloat) {
             fixedFee = feeFloat.replace(',', '.').replace(/[^0-9\.]/g, ''); //eslint-disable-line
         }
         this.setState({
@@ -247,21 +248,17 @@ export default class MintToken extends React.Component {
                             autoComplete="off"
                         />
                     </div>
-                    {
-                        this.state.tokenType === 'Standard' ?
-                            <div className='d-flex flex-row justify-content-between align-items-end m-1 p-1'>
-                                <label htmlFor="tokenDecimals" className='col-sm-4 d-flex align-items-start'>Decimals</label>
-                                <div className='w-100 d-flex flex-row justify-content-between '>
-                                    <ThemedSelect id="tokenDecimals"
-                                        value={this.state.tokenDecimals}
-                                        onChange={(dec) => this.setTokenDecimals(dec.value)}
-                                        options={this.state.optionsDecimals}
-                                    />
-                                    <div></div>
-                                </div>
-                            </div>
-                            : null
-                    }
+                    <div className='d-flex flex-row justify-content-between align-items-end m-1 p-1'>
+                        <label htmlFor="tokenDecimals" className='col-sm-4 d-flex align-items-start'>Decimals</label>
+                        <div className='w-100 d-flex flex-row justify-content-between '>
+                            <ThemedSelect id="tokenDecimals"
+                                value={this.state.tokenDecimals}
+                                onChange={(dec) => this.setTokenDecimals(dec.value)}
+                                options={this.state.optionsDecimals}
+                            />
+                            <div></div>
+                        </div>
+                    </div>
                     <TokenMedia type={this.state.tokenType} address={this.state.tokenMediaAddress} width={200} />
                     {
                         this.state.tokenType === "Standard" ? null
